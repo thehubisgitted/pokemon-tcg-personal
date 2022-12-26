@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DropDown } from "./DropDown";
+import { DropDown } from "./components/DropDown";
 import "./App.css";
 
 function App() {
@@ -8,9 +8,14 @@ function App() {
   const pokemon_card_image_path =
     "https://assets1.ignimgs.com/2019/01/30/6-pikarom-d-1548807073825.png";
 
+  const [current_set, Set_current_set] = useState("Base Set");
+
+  const tcg_set_options: Array<String> = ["Base", "Jungle", "Fossil", "Base Set 2", "Team Rocket"]
+
+  
   return (
     <div className="flex flex-row space-x-40 font-sans items-start ">
-      <div className="p-4 space-y-8 content-center items-center">
+      <div className="p-4 space-y-8 my-0 content-center items-center ">
         <img
           src={logo_image_path}
           alt="logo"
@@ -19,14 +24,14 @@ function App() {
         <h1 className="text-center text-2xl font-extrabold"> Pokemon Pulls</h1>
       </div>
 
-      <div>
-        <DropDown />
-        <h2 className="text-center"> SET NAME</h2>
+      <div className="my-12 space-y-4">
+        <h2 className="text-center"> {current_set}</h2>
         <img
           src={pokemon_card_image_path}
           alt="Pikachu and Zekrom GX Rainbow SR Pokemon Card"
-          className="object-scale-down h-80 relative"
+          className="object-scale-down h-80 "
         ></img>
+        <DropDown current_set={current_set} Set_current_set = {Set_current_set} menu_items = {tcg_set_options} />
       </div>
 
       <div>
