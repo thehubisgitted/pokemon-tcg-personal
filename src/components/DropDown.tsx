@@ -4,12 +4,17 @@ import React, { FC } from "react";
 interface DropDown_Props {
   menu_items: String[],
   current_set: String,
-  Set_current_set: React.Dispatch<React.SetStateAction<string>>,
+  Set_current_set: React.Dispatch<React.SetStateAction<String>>,
 }
 
-export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set }) => {
+export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set, Set_current_set }) => {
+
+  const select_card_set = (set:String) =>{
+    Set_current_set(set);
+  }
+
   return (
-    <div className=" bg-indigo-100 flex justify-center absolute p-4">
+    <div className=" bg-indigo-100 flex justify-center relative w-full max-h-20 p-4">
       <Menu as="div" className="relative  w-56">
         {/*Menu Button*/}
         <Menu.Button
@@ -29,10 +34,10 @@ export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set }) => {
         <Menu.Items
           className="origin-top-right right-0 mt-2 w-full rounded-md shadow-lg
                     bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100
-                    focus:outline-none"
+                    focus:outline-none max-h-60 overflow-hidden"
         >
           {menu_items.map((item, index) => (
-            <div className="py-1">
+            <div key= {index} className="py-1">
               <Menu.Item>
                 {({ active }) => (
                   <h3
@@ -42,6 +47,7 @@ export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set }) => {
                                         ? "bg-indigo-500 text-white"
                                         : "text-gray-700"
                                     }`}
+                    onClick = {()=> select_card_set(item)}
                   >
                     {item}
                   </h3>
