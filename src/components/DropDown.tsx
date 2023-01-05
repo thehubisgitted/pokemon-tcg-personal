@@ -1,20 +1,24 @@
 import { Menu } from "@headlessui/react";
 import React, { FC } from "react";
+import { setInformatonI } from "../APIUtility";
 
 interface DropDown_Props {
-  menu_items: String[],
-  current_set: String,
-  Set_current_set: React.Dispatch<React.SetStateAction<String>>,
+  menu_items: setInformatonI[];
+  current_set: setInformatonI;
+  Set_current_set: React.Dispatch<React.SetStateAction<setInformatonI>>;
 }
 
-export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set, Set_current_set }) => {
-
-  const select_card_set = (set:String) =>{
+export const DropDown: FC<DropDown_Props> = ({
+  menu_items,
+  current_set,
+  Set_current_set,
+}) => {
+  const select_card_set = (set: setInformatonI) => {
     Set_current_set(set);
-  }
+  };
 
   return (
-    <div className=" bg-indigo-100 flex justify-center relative w-full max-h-20 p-4">
+    <div className="flex justify-center relative w-full p-4">
       <Menu as="div" className="relative  w-56">
         {/*Menu Button*/}
         <Menu.Button
@@ -23,11 +27,17 @@ export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set, Set_curr
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 
                     focus: ring-indigo-500"
         >
-          {current_set}
+        <div className="flex flex-row items-center justify-center">
+         <img
+         className="object-scale-down h-10 pr-2"
+         src={current_set.images.symbol}
+         alt="set logo"></img> 
+         <h1 className="px-2 text-xl">{current_set.name.toLocaleUpperCase()}</h1>
           <i
-            className="fa-solid fa-chevron-down -mr-1 m1-2 h-5 w-5"
+            className="fa-solid fa-chevron-down -mr-4 m1-2 h-5 w-5"
             aria-hidden="true"
           />
+          </div>
         </Menu.Button>
 
         {/*Menu Items*/}
@@ -37,25 +47,26 @@ export const DropDown: FC<DropDown_Props> = ({ menu_items, current_set, Set_curr
                     focus:outline-none max-h-60 overflow-hidden"
         >
           {menu_items.map((item, index) => (
-            <div key= {index} className="py-1">
+            <div key={index} className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <h3
-                    className={`flex items-center px-4 text-sm 
+                
+                   
+                    <h3
+                      className={`flex text-center
                                     ${
                                       active
                                         ? "bg-indigo-500 text-white"
                                         : "text-gray-700"
                                     }`}
-                    onClick = {()=> select_card_set(item)}
-                  >
-                    {item}
-                  </h3>
+                      onClick={() => select_card_set(item)}
+                    >
+                      {item.name.toLocaleUpperCase()}
+                    </h3>
                 )}
               </Menu.Item>
             </div>
           ))}
-
         </Menu.Items>
       </Menu>
     </div>
