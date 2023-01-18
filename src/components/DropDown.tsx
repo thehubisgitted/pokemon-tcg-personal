@@ -1,11 +1,11 @@
 import { Menu } from "@headlessui/react";
 import React, { FC } from "react";
-import { setInformatonI } from "../APIUtility";
+import { setInformationI } from "../APIUtility";
 
 interface DropDown_Props {
-  menu_items: setInformatonI[];
-  current_set: setInformatonI;
-  Set_current_set: React.Dispatch<React.SetStateAction<setInformatonI>>;
+  menu_items: setInformationI[];
+  current_set: setInformationI;
+  Set_current_set: React.Dispatch<React.SetStateAction<setInformationI>>;
 }
 
 export const DropDown: FC<DropDown_Props> = ({
@@ -13,7 +13,7 @@ export const DropDown: FC<DropDown_Props> = ({
   current_set,
   Set_current_set,
 }) => {
-  const select_card_set = (set: setInformatonI) => {
+  const select_card_set = (set: setInformationI) => {
     Set_current_set(set);
   };
 
@@ -59,7 +59,8 @@ export const DropDown: FC<DropDown_Props> = ({
                                         ? "bg-indigo-500 text-white"
                                         : "text-gray-700"
                                     }`}
-                      onClick={() => select_card_set(item)}
+                      onClick={() => 
+                        select_card_set(item)}
                     >
                       {item.name.toLocaleUpperCase()}
                     </h3>

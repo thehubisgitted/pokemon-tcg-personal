@@ -3,57 +3,24 @@ import { DropDown } from "./components/DropDown";
 import {
   CardInfoI,
   getCardsbySetID,
-  getRarities,
-  getSets,
-  setInformatonI,
+  getSetRarities,
+  getSets as getAllSets,
+  setInformationI,
+  TEMPORARY_getSetRarities,
 } from "./APIUtility";
 import "./App.css";
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
-import { Rarity } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import { Card, Rarity } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import sortCardsByRarity from "./pullrates";
 
 function App() {
+  //CONSTANT VARIABLES
   const logo_image_path =
     "https://www.freeiconspng.com/uploads/pokeball-pokemon-ball-picture-11.png";
   const pikachu_zekrom_card_image_path =
     "https://assets1.ignimgs.com/2019/01/30/6-pikarom-d-1548807073825.png";
 
-  const placeholder_card:CardInfoI = {
-    id: "swsh4-25",
-    name: "Charizard",
-    evolvesFrom: "Charmeleon",
-    number: "25",
-    artist: "Ryuta Fuse",
-    rarity: "Rare",
-    flavorText:
-      "It spits fire that is hot enough to melt boulders. It may cause forest fires by blowing flames.",
-    nationalPokedexNumbers: [6],
-    images: {
-      small: "https://images.pokemontcg.io/swsh4/25.png",
-      large: "https://images.pokemontcg.io/swsh4/25_hires.png",
-    },
-    tcgplayer: {
-      url: "https://prices.pokemontcg.io/tcgplayer/swsh4-25",
-      updatedAt: "2021/08/04",
-      prices: {
-        normal: {
-          low: 1.73,
-          mid: 3.54,
-          high: 12.99,
-          market: 2.82,
-          directLow: 3.93,
-        },
-        reverseHolofoil: {
-          low: 3,
-          mid: 8.99,
-          high: 100,
-          market: 3.89,
-          directLow: 4.46,
-        },
-      },
-    },
-  }
-
-  const [current_set, Set_current_set] = useState<setInformatonI>({
+  const placeholder_set: setInformationI = {
     id: "base1",
     name: "Base",
     series: "Base",
@@ -63,15 +30,15 @@ function App() {
       symbol: "https://images.pokemontcg.io/base1/symbol.png",
       logo: "https://images.pokemontcg.io/base1/logo.png",
     },
-  });
+  };
 
-  const [current_card, Set_current_card] = useState<CardInfoI>({
+  const placeholder_card: CardInfoI = {
     id: "swsh4-25",
     name: "Charizard",
     evolvesFrom: "Charmeleon",
     number: "25",
     artist: "Ryuta Fuse",
-    rarity: "Rare",
+    rarity: PokemonTCG.Rarity.Rare,
     flavorText:
       "It spits fire that is hot enough to melt boulders. It may cause forest fires by blowing flames.",
     nationalPokedexNumbers: [6],
@@ -99,42 +66,76 @@ function App() {
         },
       },
     },
-  });
-
-  const [tcg_sets, Set_tcg_sets] = useState<setInformatonI[]>([
-    {
-      id: "base1",
-      name: "Base",
-      series: "Base",
-      releaseDate: "1999/01/09",
-      printedTotal: 102,
-      images: {
-        symbol: "https://images.pokemontcg.io/base1/symbol.png",
-        logo: "https://images.pokemontcg.io/base1/logo.png",
-      },
-    },
+  };
+  // STATES
+  const [all_sets, Set_all_sets] = useState<setInformationI[]>([
+    placeholder_set,
   ]);
 
-  const [card_rarities, Set_card_rarities] = useState<PokemonTCG.Rarity[]>([
-    Rarity.Common,
-    Rarity.Uncommon,
-    Rarity.Rare,
-    Rarity.Promo,
+  const [current_set, Set_current_set] =
+    useState<setInformationI>(placeholder_set);
+  const [current_card, Set_current_card] =
+    useState<CardInfoI>(placeholder_card);
+  const [current_pack, Set_current_pack] = useState<CardInfoI[]>([
+    placeholder_card,
   ]);
 
-  
+  const [current_rarity_dictionary, Set_current_rarity_dictionary] = useState<
+    Map<PokemonTCG.Rarity, CardInfoI[]>
+  >(new Map().set(PokemonTCG.Rarity.Rare, []));
+  const [current_rarities, Set_current_rarities] = useState<
+    PokemonTCG.Rarity[]
+  >([Rarity.Common]);
 
-  const rarity_to_card_dictionary = useState<Map<PokemonTCG.Rarity,CardInfoI>>();
+  const [card_index, Set_card_index] = useState<number>(0);
+  const [money_earned, Set_money_earned] = useState<number>(0);
+  const [money_lost, Set_money_lost] = useState<number>(0);
+
+  //async functions
+  const fetchRarityDictionaryAndSetState = async (
+    API_Promise: Promise<CardInfoI[]>,
+    setState: React.Dispatch<
+      React.SetStateAction<Map<PokemonTCG.Rarity, CardInfoI[]>>
+    >
+  ) => {
+    try {
+      const card_list = await API_Promise;
+      const dictionary = sortCardsByRarity(card_list);
+      setState(dictionary);
+      //appending this section until rarity can be queried per set from the APi
+      //will use dictionary to populate rarities instead
+      const set_rarities = getRaritiesFromMap(dictionary);
+      Set_current_rarities(set_rarities);
+    } catch (e) {
+      console.error(`Failed to set Rarity Dictionary: ${e}`);
+    }
+  };
 
   const fetchSetInformationAndSetState = async (
-    API_Promise: Promise<setInformatonI[]>,
-    setState: React.Dispatch<React.SetStateAction<setInformatonI[]>>
+    API_Promise: Promise<setInformationI[]>,
+    setState: React.Dispatch<React.SetStateAction<setInformationI[]>>
   ) => {
     try {
       const sets_info = await API_Promise;
-      Set_tcg_sets(sets_info);
+      Set_all_sets(sets_info);
     } catch (e) {
       console.error(`Failed to set Set Information, ${e}`);
+    }
+  };
+
+  const TEMP_fetchRaritiesAndSetState = async (
+    API_Promise: Promise<Rarity[]>
+  ) => {
+    try {
+      const rarities = await API_Promise;
+      const rarity_order = Object.values(PokemonTCG.Rarity);
+      const sorted_rarities = rarities.sort((a,b)=> rarity_order.indexOf(a)- rarity_order.indexOf(b));
+      sorted_rarities.pop();
+      Set_current_rarities(sorted_rarities);
+      console.log("unsorted rarities:" + rarities);
+      console.log("sorted rarities: " + sorted_rarities);
+    } catch (e) {
+      console.error(`Failed to set the rarities (TEMPORARY METHOD) ${e}`);
     }
   };
 
@@ -150,10 +151,141 @@ function App() {
     }
   };
 
+  //utility functions
+  const getRaritiesFromMap = (
+    Map: Map<PokemonTCG.Rarity, CardInfoI[]>
+  ): PokemonTCG.Rarity[] => {
+    let rarity_array = [];
+    for (const key of Map.keys()) {
+      rarity_array.push(key);
+    }
+    return rarity_array;
+  };
+
+  const createAPack = () => {
+    let pack: CardInfoI[] = [];
+
+    console.log("---CREATE A PACK START ---");
+    console.log(`rarities: ${current_rarities}`);
+    
+    const common_slot = PokemonTCG.Rarity.Common;
+    const uncommon_slot = PokemonTCG.Rarity.Uncommon;
+    putCardsIntoPackByRarity(pack, common_slot, 6);
+    putCardsIntoPackByRarity(pack, uncommon_slot, 3);
+
+    const rarities_left = current_rarities.length -2;
+    let i = 1;
+    for(i; i < rarities_left;i++){
+      const result = Math.random();
+
+      if(i === 2){
+        if(result < .4){
+          break;
+        }
+      }
+
+      if(i === 3 || i  < 5){
+        if( result < .5){
+          break;
+        }
+      }
+      if(i >= 5){
+        if(result < .2){
+          break;
+        }
+      }
+
+    }
+    console.log("index is " + i);
+    const rare_slot = current_rarities[i];
+    console.log(`Common is ${common_slot}, Uncommon is ${uncommon_slot}, and Rare is ${rare_slot}`);
+    putCardsIntoPackByRarity(pack, rare_slot, 1);
+    if(current_set.series === "Base"){
+      pack.pop();
+      const rarity = Math.random();
+      if( rarity > .1){
+        putCardsIntoPackByRarity(pack,PokemonTCG.Rarity.Rare,1);
+
+      }
+      else{
+        putCardsIntoPackByRarity(pack,PokemonTCG.Rarity.RareHolo,1);
+      }
+    }
+    Set_current_pack(pack);
+  };
+  /**
+   *
+   * @param pack CardInfoI array that is to be the current pack
+   * @param rarity the rarity for the types of cards you wanna pack
+   * @param amount the amount of cards to pack inclusive ie. 3 adds 3 packs
+   */
+  const putCardsIntoPackByRarity = (
+    pack: CardInfoI[],
+    rarity: PokemonTCG.Rarity,
+    amount: number
+  ) => {
+    
+    for (let i = 0; i < amount; i++) {
+      const card_list = current_rarity_dictionary.get(rarity);
+      const list_size = card_list?.length;
+
+      if (list_size !== undefined && card_list !== undefined) {
+        const index = Math.floor(Math.random() * list_size);
+        pack.push(card_list[index]);
+      }
+    }
+  };
+
+  const PullAPack = () => {
+    createAPack();
+    Set_card_index(0);
+    Set_current_card(current_pack[0]);
+    for(const card of current_pack) {
+      console.log(`Name: ${card.name} Rarity: ${card.rarity}`);
+    }
+    console.log(`NUMBER OF CARDS IN PACK: ${current_pack.length}`);
+  };
+
+  const nextCardOnClick = () => {
+    const new_index = card_index+1;
+    if(new_index < current_pack.length) {
+      Set_card_index(new_index);
+    }
+    Set_current_card(current_pack[card_index]);
+  };
+
+  const prevCardOnClick = () => {
+    const new_index = card_index-1;
+    if(new_index > 0){
+      Set_card_index(new_index);
+    }
+    Set_current_card(current_pack[card_index]);
+  };
+
+
+
+  //initialization effects
   useEffect(() => {
-    fetchRaritiesAndSetState(getRarities(), Set_card_rarities);
-    fetchSetInformationAndSetState(getSets(), Set_tcg_sets);
+    //fetchRaritiesAndSetState(getSetRarities(), Set_current_rarities);
+    fetchSetInformationAndSetState(getAllSets(), Set_all_sets);
+    TEMP_fetchRaritiesAndSetState(TEMPORARY_getSetRarities(current_set.id));
+    fetchRarityDictionaryAndSetState(
+      getCardsbySetID(current_set.id),
+      Set_current_rarity_dictionary
+    );
+   
   }, []);
+
+  //on Set change effects
+  useEffect(() => {
+    //fetchRaritiesAndSetState(getSetRarities(), Set_current_rarities);
+    TEMP_fetchRaritiesAndSetState(TEMPORARY_getSetRarities(current_set.id));
+    fetchRarityDictionaryAndSetState(
+      getCardsbySetID(current_set.id),
+      Set_current_rarity_dictionary
+    );
+
+  }, [current_set]);
 
   return (
     <div className="flex w-full flex-row font-sans items-start">
@@ -166,13 +298,22 @@ function App() {
         <h1 className=" text-2xl font-extrabold "> Pokemon Pulls</h1>
         <div className="mt-20 text-center">
           <h2> Card Information </h2>
-          <h3>{current_card.name} Num. {current_card.number}{" "}</h3>
-          {current_card.flavorText? <h3>{current_card.flavorText}</h3> :""}
+          <h3>
+            {current_card.name} Num. {current_card.number}{" "}
+          </h3>
+          {current_card.flavorText ? <h3>{current_card.flavorText}</h3> : ""}
           <div className="flex-row px-4">
-            {current_card.evolvesFrom? <h3>Evolves From {current_card.evolvesFrom}</h3>:""}
-            {current_card.evolvesTo? <h3>Evolves To {current_card.evolvesTo}</h3>:""}
+            {current_card.evolvesFrom ? (
+              <h3>Evolves From {current_card.evolvesFrom}</h3>
+            ) : (
+              ""
+            )}
+            {current_card.evolvesTo ? (
+              <h3>Evolves To {current_card.evolvesTo}</h3>
+            ) : (
+              ""
+            )}
           </div>
-            
         </div>
       </div>
 
@@ -184,22 +325,28 @@ function App() {
         ></img>
 
         <div className="justify-center text-center">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
+          onClick={()=> prevCardOnClick()}>
+            {" "}
+            {"<"}{" "}
+          </button>
           <button
-            onClick={() => getCardsbySetID("g1")}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-4 w-1/2 rounded"
+            onClick={()=> PullAPack()}
           >
             {" "}
-            Button 1{" "}
+            Pull{" "}
           </button>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-4 rounded">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
+          onClick={()=>nextCardOnClick()}>
             {" "}
-            Button 2{" "}
+            {`>`} {""}
           </button>
         </div>
         <DropDown
           current_set={current_set}
           Set_current_set={Set_current_set}
-          menu_items={tcg_sets}
+          menu_items={all_sets}
         />
       </div>
 

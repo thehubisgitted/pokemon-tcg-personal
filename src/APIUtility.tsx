@@ -5,6 +5,16 @@ type getListI = {
   data: PokemonTCG.Rarity[];
 };
 
+type rarity_call = {
+  rarity: String;
+}
+type temp_getSetRaritiesI = {
+  data: rarity_call[];
+  page: number;
+  pageSize: number;
+  count: number;
+  totalCount: number;
+};
 export interface CardInfoI {
   id:String;
   name:String;
@@ -12,7 +22,7 @@ export interface CardInfoI {
   evolvesTo?: String[];
   number: String;
   artist?: String;
-  rarity: String;
+  rarity: PokemonTCG.Rarity;
   flavorText?: String;
   nationalPokedexNumbers?: number[];
   images: PokemonTCG.CardImage;
@@ -36,7 +46,7 @@ type getSetsI = {
   totalCount: number;
 };
 
-export interface setInformatonI {
+export interface setInformationI {
   id: String;
   name: String;
   series: String;
@@ -45,9 +55,9 @@ export interface setInformatonI {
   images: PokemonTCG.SetImage;
 }
 
-export const getRarities = async (): Promise<PokemonTCG.Rarity[]> => {
+export const getSetRarities = async (): Promise<PokemonTCG.Rarity[]> => {
   const rarities: PokemonTCG.Rarity[] = await axiosConfig
-    .get<getListI>("/rarities")
+    .get<getListI>(`/rarities`)
     .then((response) => {
       const data = response.data;
       const rarities = response.data.data;
@@ -57,16 +67,51 @@ export const getRarities = async (): Promise<PokemonTCG.Rarity[]> => {
 
   return rarities;
 };
+export const TEMPORARY_getSetRarities = async(set_id:String):Promise<PokemonTCG.Rarity[]> => {
+  let current_page: number = 1;
+  let count: number = 1;
+  let totalCount: number = 1;
+  let rarity_list: PokemonTCG.Rarity[] = [];
+
+  do{
+    try{
+      const query_data = await axiosConfig
+      .get<temp_getSetRaritiesI>(
+        `/cards?page=${current_page.toString()}&q=set.id:${set_id}&select=rarity`
+      )
+      .then((response) => {
+        return response.data;
+      });
+
+      const rarity_data = query_data.data;
+      const unique_list = new Set();
+      for(const entry of rarity_data){
+        unique_list.add(entry.rarity);
+      }
+      rarity_list = Array.from(unique_list) as PokemonTCG.Rarity[];
+
+      count = query_data.count;
+      totalCount = query_data.totalCount;
+      current_page += 1;
+
+    } catch(e){
+      console.error(`Whoops, an error occurred when getting rarities, ${e}`);
+    }
+
+  } while(count < totalCount);
+  return rarity_list;
+  
+}
 
 export const pullRarity = (card_rarities: String[]): String => {
   return "empty";
 };
 
-export const getSets = async (): Promise<setInformatonI[]> => {
+export const getSets = async (): Promise<setInformationI[]> => {
   let current_page: number = 1;
   let count: number = 1;
   let totalCount: number = 1;
-  let set_info_array: setInformatonI[] = [];
+  let set_info_array: setInformationI[] = [];
 
   const banned_keywords: String[] = [
     "*Promo*",
@@ -116,10 +161,11 @@ export const getSets = async (): Promise<setInformatonI[]> => {
   return set_info_array;
 };
 
-export const getCardsbySetID = async (setID: String) => {
+export const getCardsbySetID = async (setID: String):Promise<CardInfoI[]> => {
   let current_page: number = 1;
   let count: number = 1;
   let totalCount: number = 1;
+  let card_list: CardInfoI[] = [];
 
   const select_parameters: String[] = [
     "id",
@@ -148,9 +194,7 @@ export const getCardsbySetID = async (setID: String) => {
 
       const cards_data: CardInfoI[] = query_data.data;
 
-      cards_data.map((card) => {
-        //console.log(JSON.stringify(card));
-      });
+      card_list = cards_data
 
       count = query_data.count;
       totalCount = query_data.totalCount;
@@ -159,4 +203,5 @@ export const getCardsbySetID = async (setID: String) => {
       console.error(`Oops, something went wrong ${e}`);
     }
   } while (count < totalCount);
+  return card_list;
 };
