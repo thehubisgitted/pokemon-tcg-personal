@@ -170,7 +170,13 @@ function App() {
 
     console.log("---CREATE A PACK START ---");
     console.log(`rarities: ${current_rarities}`);
-    
+    console.log("----DICTIONARY AT START OF CREATE A PACK() CALL");
+    for(const [key, value] of current_rarity_dictionary){
+      console.log(`key is ${key} and list is..`);
+      for(const card of value){
+        console.log(`c_NAME: ${card.name} and c_Rarity: ${card.rarity}`);
+      }
+    }
     const common_slot = PokemonTCG.Rarity.Common;
     const uncommon_slot = PokemonTCG.Rarity.Uncommon;
     putCardsIntoPackByRarity(pack, common_slot, 6);
@@ -233,6 +239,7 @@ function App() {
 
       if (list_size !== undefined && card_list !== undefined) {
         const index = Math.floor(Math.random() * list_size);
+        console.log(`card being pushed: ${card_list[index].name}`);
         pack.push(card_list[index]);
       }
     }
@@ -244,9 +251,20 @@ function App() {
    * sets the current card thats displayed to current_pack[0]
    */
   const PullAPack = () => {
+    console.log("AT START OF PULLAPACK");
+    console.log(`rarities: ${current_rarities} and current_pack is...`);
+    for(const card of current_pack){
+      console.log(`b_name: ${card.name} and b_rarity: ${card.rarity}`);
+    }
     createAPack();
+    console.log(`------> AFTER CREATEAPACK() IS CALLED, current_pack is ...`);
+    for(const card of current_pack){
+      console.log(`a_name: ${card.name} and a_rarity: ${card.rarity}`);
+    }
     Set_card_index(0);
     Set_current_card(current_pack[0]);
+
+    //debug 
     for(const card of current_pack) {
       console.log(`Name: ${card.name} Rarity: ${card.rarity}`);
     }
