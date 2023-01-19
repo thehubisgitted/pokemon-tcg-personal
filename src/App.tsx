@@ -104,8 +104,8 @@ function App() {
       setState(dictionary);
       //appending this section until rarity can be queried per set from the APi
       //will use dictionary to populate rarities instead
-      const set_rarities = getRaritiesFromMap(dictionary);
-      Set_current_rarities(set_rarities);
+      // const set_rarities = getRaritiesFromMap(dictionary);
+      // Set_current_rarities(set_rarities);
     } catch (e) {
       console.error(`Failed to set Rarity Dictionary: ${e}`);
     }
@@ -161,7 +161,10 @@ function App() {
     }
     return rarity_array;
   };
-
+  /**
+   * Creates a 'pack' of 10 card objects and sets them to state 'current_pack'
+   * Uses putCardsIntoPackByRarity() to push certain cards into a pack
+   */
   const createAPack = () => {
     let pack: CardInfoI[] = [];
 
@@ -194,7 +197,7 @@ function App() {
           break;
         }
       }
-
+      i++;
     }
     console.log("index is " + i);
     const rare_slot = current_rarities[i];
@@ -224,7 +227,6 @@ function App() {
     rarity: PokemonTCG.Rarity,
     amount: number
   ) => {
-    
     for (let i = 0; i < amount; i++) {
       const card_list = current_rarity_dictionary.get(rarity);
       const list_size = card_list?.length;
@@ -235,7 +237,12 @@ function App() {
       }
     }
   };
-
+  /**
+   * Method that takes care of everything that involves 'pulling a pack'
+   * First calls createAPack() to create and set a new pack
+   * changes the index of the current_card to start (0)
+   * sets the current card thats displayed to current_pack[0]
+   */
   const PullAPack = () => {
     createAPack();
     Set_card_index(0);
