@@ -220,7 +220,11 @@ function App() {
         putCardsIntoPackByRarity(pack,PokemonTCG.Rarity.RareHolo,1);
       }
     }
-    Set_current_pack(pack);
+    Set_current_pack(() => {
+      Set_card_index(0)
+      Set_current_card(pack[0])
+      return pack
+    })
   };
   /**
    *
@@ -261,8 +265,7 @@ function App() {
     for(const card of current_pack){
       console.log(`a_name: ${card.name} and a_rarity: ${card.rarity}`);
     }
-    Set_card_index(0);
-    Set_current_card(current_pack[0]);
+    
 
     //debug 
     for(const card of current_pack) {
