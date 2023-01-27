@@ -11,3 +11,16 @@
     font-family: 'decotural';
     src: url("../assets/fonts/DecoturaICG.ttf");
 }
+
+@font-face {
+    font-family: 'Porcine';
+    src: url('Porcine-Heavy.eot');
+    src: local('Porcine Heavy'), local('Porcine-Heavy'),
+        url('Porcine-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('Porcine-Heavy.woff2') format('woff2'),
+        url('Porcine-Heavy.woff') format('woff'),
+        url('Porcine-Heavy.ttf') format('truetype'),
+        url('Porcine-Heavy.svg#Porcine-Heavy') format('svg');
+    font-weight: 900;
+    font-style: normal;
+}

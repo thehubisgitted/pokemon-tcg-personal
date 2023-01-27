@@ -415,18 +415,61 @@ function App() {
           </h2>
         </div>
         {current_card.tcgplayer ? (
-          <div className = "mt-4">
+          <div className="mt-4">
             <img
               alt="tcgplayer logo "
               src={tcgplayer_logo_image_path}
               className="object-scale-down w-1/2 block mx-auto"
             ></img>
-            {current_card.tcgplayer.prices.holofoil ? <h2>Market Price: <span>{current_card.tcgplayer.prices.holofoil.market}</span></h2> : current_card.tcgplayer.prices.reverseHolofoil? <h2>Market Price: <span>{current_card.tcgplayer.prices.reverseHolofoil.market}</span></h2>: current_card.tcgplayer.prices.normal? <h2>Market Price: <span>{current_card.tcgplayer.prices.normal.market}</span></h2>: "N/A"}
+            <div className="mt-2 flex justify-center">
+            {current_card.tcgplayer.prices.holofoil ? (
+              <h2 className="font-extrabold text-2xl">
+                Market Price:{" "}
+                <span className={
+                    current_card.tcgplayer.prices.holofoil.market !== null
+                      ? current_card.tcgplayer.prices.holofoil.market > 10
+                        ? "text-jade text-2xl"
+                        : current_card.tcgplayer.prices.holofoil.market < 1 ? "text-red-600" : ""
+                      : ""
+                  }>{current_card.tcgplayer.prices.holofoil.market}</span>
+              </h2>
+            ) : current_card.tcgplayer.prices.reverseHolofoil ? (
+              <h2 className="font-extrabold text-2xl">
+                Market Price:{" "}
+                <span className={
+                    current_card.tcgplayer.prices.reverseHolofoil.market !== null
+                      ? current_card.tcgplayer.prices.reverseHolofoil.market > 10
+                        ? "text-jade text-2xl"
+                        : current_card.tcgplayer.prices.reverseHolofoil.market < 1? "text-red-600": ""
+                      : ""
+                  }>
+                  {current_card.tcgplayer.prices.reverseHolofoil.market}
+                </span>
+              </h2>
+            ) : current_card.tcgplayer.prices.normal ? (
+              <h2 className="font-extrabold text-2xl">
+                Market Price:{" "}
+                <span
+                  className={
+                    current_card.tcgplayer.prices.normal.market !== null
+                      ? current_card.tcgplayer.prices.normal.market > 10
+                        ? "text-jade text-2xl"
+                        : current_card.tcgplayer.prices.normal.market < 1 ? "text-red-600": ""
+                      : ""
+                  }
+                >
+                  {current_card.tcgplayer.prices.normal.market}
+                </span>
+              </h2>
+            ) : (
+              "NOT FOUND"
+            )}
+            </div>
           </div>
         ) : (
           ""
         )}
-        <h2>{current_card.rarity}</h2>
+        <h2 className= {`text-center ${current_card.rarity === Rarity.Common? "text-black font-semibold text-2xl ": current_card.rarity === Rarity.Uncommon? "text-black font-semibold text-2xl ": "text-retro-orange-tan font-black text-3xl" }`}>{current_card.rarity.toLocaleUpperCase()}</h2>
       </div>
     </div>
   );

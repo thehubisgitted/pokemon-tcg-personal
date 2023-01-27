@@ -16,10 +16,12 @@ module.exports = {
         'retro-light-blue': '#1D8698',
         'retro-dark-blue': '#042054',
         'pokemon-black': '#000000',
+        'jade': '#00A86B',
       },
       fontFamily: {
         bolt: ['bolt', 'regular'],
-        decotural: ['decotural', 'regular'],
+        decotural: ['decotural', 'regular'],  
+        Porcine: ['Porcine', 'regular'],
       }, 
     },
   },
