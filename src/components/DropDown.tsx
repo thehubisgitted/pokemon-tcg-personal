@@ -23,9 +23,9 @@ export const DropDown: FC<DropDown_Props> = ({
         {/*Menu Button*/}
         <Menu.Button
           className="inline-flex justify-center w-full rounded-md border border-gray-300
-                    shadow-sm px-4 py-2  bg-white text-sm font-medium text-gray-700 hover:bg-gray-50
-                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 
-                    focus: ring-indigo-500"
+                    shadow-sm px-4 py-2  bg-white text-sm font-medium text-gray-700 hover:bg-retro-tan
+                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100   
+                    focus: ring-retro-dark-blue"
         >
         <div className="flex flex-row items-center justify-center">
          <img
@@ -56,7 +56,7 @@ export const DropDown: FC<DropDown_Props> = ({
                       className={` text-center block m-auto
                                     ${
                                       active
-                                        ? "bg-indigo-500 text-white"
+                                        ? "bg-retro-orange-tan text-white"
                                         : "text-gray-700"
                                     }`}
                       onClick={() => 
