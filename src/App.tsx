@@ -421,10 +421,12 @@ function App() {
               src={tcgplayer_logo_image_path}
               className="object-scale-down w-1/2 block mx-auto"
             ></img>
+            {current_card.tcgplayer.prices.holofoil ? <h2>Market Price: <span>{current_card.tcgplayer.prices.holofoil.market}</span></h2> : current_card.tcgplayer.prices.reverseHolofoil? <h2>Market Price: <span>{current_card.tcgplayer.prices.reverseHolofoil.market}</span></h2>: current_card.tcgplayer.prices.normal? <h2>Market Price: <span>{current_card.tcgplayer.prices.normal.market}</span></h2>: "N/A"}
           </div>
         ) : (
           ""
         )}
+        <h2>{current_card.rarity}</h2>
       </div>
     </div>
   );
