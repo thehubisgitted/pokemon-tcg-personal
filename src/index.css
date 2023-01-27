@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'bolt';
+    src: url("../assets/fonts/ITC Bolt Bold Regular.otf");
+}
+
+@font-face {
+    font-family: 'decotural';
+    src: url("../assets/fonts/DecoturaICG.ttf");
+}

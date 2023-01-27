@@ -17,8 +17,8 @@ function App() {
   //CONSTANT VARIABLES
   const logo_image_path =
     "https://www.freeiconspng.com/uploads/pokeball-pokemon-ball-picture-11.png";
-  const pikachu_zekrom_card_image_path =
-    "https://assets1.ignimgs.com/2019/01/30/6-pikarom-d-1548807073825.png";
+  const tcgplayer_logo_image_path =
+    "https://app.tcgplayer.com/_nuxt/img/TCG-Logo-Main.a3b08eb.png";
 
   const placeholder_set: setInformationI = {
     id: "base1",
@@ -129,7 +129,9 @@ function App() {
     try {
       const rarities = await API_Promise;
       const rarity_order = Object.values(PokemonTCG.Rarity);
-      const sorted_rarities = rarities.sort((a,b)=> rarity_order.indexOf(a)- rarity_order.indexOf(b));
+      const sorted_rarities = rarities.sort(
+        (a, b) => rarity_order.indexOf(a) - rarity_order.indexOf(b)
+      );
       sorted_rarities.pop();
       Set_current_rarities(sorted_rarities);
       console.log("unsorted rarities:" + rarities);
@@ -171,9 +173,9 @@ function App() {
     console.log("---CREATE A PACK START ---");
     console.log(`rarities: ${current_rarities}`);
     console.log("----DICTIONARY AT START OF CREATE A PACK() CALL");
-    for(const [key, value] of current_rarity_dictionary){
+    for (const [key, value] of current_rarity_dictionary) {
       console.log(`key is ${key} and list is..`);
-      for(const card of value){
+      for (const card of value) {
         console.log(`c_NAME: ${card.name} and c_Rarity: ${card.rarity}`);
       }
     }
@@ -182,24 +184,24 @@ function App() {
     putCardsIntoPackByRarity(pack, common_slot, 6);
     putCardsIntoPackByRarity(pack, uncommon_slot, 3);
 
-    const rarities_left = current_rarities.length -2;
+    const rarities_left = current_rarities.length - 2;
     let i = 1;
-    for(i; i < rarities_left;i++){
+    for (i; i < rarities_left; i++) {
       const result = Math.random();
 
-      if(i === 2){
-        if(result < .4){
+      if (i === 2) {
+        if (result < 0.4) {
           break;
         }
       }
 
-      if(i === 3 || i  < 5){
-        if( result < .5){
+      if (i === 3 || i < 5) {
+        if (result < 0.5) {
           break;
         }
       }
-      if(i >= 5){
-        if(result < .2){
+      if (i >= 5) {
+        if (result < 0.2) {
           break;
         }
       }
@@ -207,24 +209,24 @@ function App() {
     }
     console.log("index is " + i);
     const rare_slot = current_rarities[i];
-    console.log(`Common is ${common_slot}, Uncommon is ${uncommon_slot}, and Rare is ${rare_slot}`);
+    console.log(
+      `Common is ${common_slot}, Uncommon is ${uncommon_slot}, and Rare is ${rare_slot}`
+    );
     putCardsIntoPackByRarity(pack, rare_slot, 1);
-    if(current_set.series === "Base"){
+    if (current_set.series === "Base") {
       pack.pop();
       const rarity = Math.random();
-      if( rarity > .1){
-        putCardsIntoPackByRarity(pack,PokemonTCG.Rarity.Rare,1);
-
-      }
-      else{
-        putCardsIntoPackByRarity(pack,PokemonTCG.Rarity.RareHolo,1);
+      if (rarity > 0.1) {
+        putCardsIntoPackByRarity(pack, PokemonTCG.Rarity.Rare, 1);
+      } else {
+        putCardsIntoPackByRarity(pack, PokemonTCG.Rarity.RareHolo, 1);
       }
     }
     Set_current_pack(() => {
-      Set_card_index(0)
-      Set_current_card(pack[0])
-      return pack
-    })
+      Set_card_index(0);
+      Set_current_card(pack[0]);
+      return pack;
+    });
   };
   /**
    *
@@ -257,40 +259,37 @@ function App() {
   const PullAPack = () => {
     console.log("AT START OF PULLAPACK");
     console.log(`rarities: ${current_rarities} and current_pack is...`);
-    for(const card of current_pack){
+    for (const card of current_pack) {
       console.log(`b_name: ${card.name} and b_rarity: ${card.rarity}`);
     }
     createAPack();
     console.log(`------> AFTER CREATEAPACK() IS CALLED, current_pack is ...`);
-    for(const card of current_pack){
+    for (const card of current_pack) {
       console.log(`a_name: ${card.name} and a_rarity: ${card.rarity}`);
     }
-    
 
-    //debug 
-    for(const card of current_pack) {
+    //debug
+    for (const card of current_pack) {
       console.log(`Name: ${card.name} Rarity: ${card.rarity}`);
     }
     console.log(`NUMBER OF CARDS IN PACK: ${current_pack.length}`);
   };
 
   const nextCardOnClick = () => {
-    const new_index = card_index+1;
-    if(new_index < current_pack.length) {
+    const new_index = card_index + 1;
+    if (new_index < current_pack.length) {
       Set_card_index(new_index);
     }
     Set_current_card(current_pack[card_index]);
   };
 
   const prevCardOnClick = () => {
-    const new_index = card_index-1;
-    if(new_index > 0){
+    const new_index = card_index - 1;
+    if (new_index > 0) {
       Set_card_index(new_index);
     }
     Set_current_card(current_pack[card_index]);
   };
-
-
 
   //initialization effects
   useEffect(() => {
@@ -301,7 +300,6 @@ function App() {
       getCardsbySetID(current_set.id),
       Set_current_rarity_dictionary
     );
-   
   }, []);
 
   //on Set change effects
@@ -312,25 +310,32 @@ function App() {
       getCardsbySetID(current_set.id),
       Set_current_rarity_dictionary
     );
-
   }, [current_set]);
 
   return (
-    <div className="flex w-full flex-row font-sans items-start">
+    <div className="flex w-full flex-row font-sans-roboto items-start bg-retro-light-blue text-pokemon-black">
       <div className="p-4 w-1/3 content-center items-center">
         <img
           src={logo_image_path}
           alt="logo"
-          className="transform -scale-x-100 object-scale-down h-40 w-40 my-2"
+          className="transform -scale-x-100 object-scale-down h-32 w-32 my-2"
         />
         <h1 className=" text-2xl font-extrabold "> Pokemon Pulls</h1>
-        <div className="mt-20 text-center">
-          <h2> Card Information </h2>
-          <h3>
+        <div className="mt-28 text-center">
+          <h2 className="font-black text-3xl">
             {current_card.name} Num. {current_card.number}{" "}
-          </h3>
-          {current_card.flavorText ? <h3>{current_card.flavorText}</h3> : ""}
-          <div className="flex-row px-4">
+          </h2>
+          {current_card.flavorText ? (
+            <div className="border-retro-orange-tan border-solid border-8 bg-retro-tan rounded-md m-2 p-4">
+              <p className="font-medium text-retro-dark-blue text-lg">
+                {current_card.flavorText}
+              </p>
+            </div>
+          ) : (
+            ""
+          )}
+          {/* evolves from / to div block */}
+          {/* <div className="flex-row px-4">
             {current_card.evolvesFrom ? (
               <h3>Evolves From {current_card.evolvesFrom}</h3>
             ) : (
@@ -341,7 +346,19 @@ function App() {
             ) : (
               ""
             )}
-          </div>
+          </div> */}
+          {current_card.artist ? (
+            <div>
+              <h3>
+                Art by{" "}
+                <span className="text-retro-orange-red font-semibold">
+                  {current_card.artist}
+                </span>
+              </h3>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
 
@@ -353,20 +370,24 @@ function App() {
         ></img>
 
         <div className="justify-center text-center">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
-          onClick={()=> prevCardOnClick()}>
+          <button
+            className="bg-retro-dark-blue hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
+            onClick={() => prevCardOnClick()}
+          >
             {" "}
             {"<"}{" "}
           </button>
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-4 w-1/2 rounded"
-            onClick={()=> PullAPack()}
+            className="bg-retro-dark-blue hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-4 w-1/2 rounded"
+            onClick={() => PullAPack()}
           >
             {" "}
             Pull{" "}
           </button>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
-          onClick={()=>nextCardOnClick()}>
+          <button
+            className="bg-retro-dark-blue hover:bg-blue-700 text-white font-semibold py-2 mx-1 px-1 rounded"
+            onClick={() => nextCardOnClick()}
+          >
             {" "}
             {`>`} {""}
           </button>
@@ -385,11 +406,25 @@ function App() {
           className="object-scale-down w-2/3 block mx-auto"
         ></img>
 
-        <div className="mt-10 text-center">
-          <h2>Series: {current_set.series}</h2>
-          <h2>Release Date: {current_set.releaseDate}</h2>
-          <h2>Total Sets Printed: {current_set.printedTotal}</h2>
+        <div className="mt-5 text-center font-semibold text-lg">
+          <h2>
+            Series: <span>{current_set.series}</span>
+          </h2>
+          <h2>
+            Release Date: <span>{current_set.releaseDate}</span>
+          </h2>
         </div>
+        {current_card.tcgplayer ? (
+          <div className = "mt-4">
+            <img
+              alt="tcgplayer logo "
+              src={tcgplayer_logo_image_path}
+              className="object-scale-down w-1/2 block mx-auto"
+            ></img>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

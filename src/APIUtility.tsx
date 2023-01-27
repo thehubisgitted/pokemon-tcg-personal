@@ -118,8 +118,9 @@ export const getSets = async (): Promise<setInformationI[]> => {
     "*Mcdonald*",
     "*POP*",
     "*FUTSAL*",
-    "*Trainer Gallery",
-    "Classic Collection",
+    "*Trainer Gallery*",
+    "*Classic Collection*",
+    "*Galarian Gallery*"
   ];
   const q_parameter: String = `-name%3A%22${banned_keywords.join(
     "%22%20-name%3A%22"
