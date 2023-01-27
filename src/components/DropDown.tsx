@@ -53,7 +53,7 @@ export const DropDown: FC<DropDown_Props> = ({
                 
                    
                     <h3
-                      className={`flex text-center
+                      className={` text-center block m-auto
                                     ${
                                       active
                                         ? "bg-indigo-500 text-white"
