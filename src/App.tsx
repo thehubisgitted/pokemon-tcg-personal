@@ -313,16 +313,21 @@ function App() {
   }, [current_set]);
 
   return (
-    <div className="flex w-full flex-row font-sans-roboto items-start bg-retro-light-blue text-pokemon-black">
-      <div className="p-4 w-1/3 content-center items-center">
+    <div className="grid w-screen h-screen grid-cols-1 font-sans-roboto items-start bg-retro-light-blue text-pokemon-black md:grid-cols-3">
+      {/* first section */}
+      <div className="flex flex-col content-center p-4 order-2 md:order-1 bg-inherit">
+        {/* logo and title div */}
+        <div className="mb-4 order-1 hidden md:grid">
         <img
           src={logo_image_path}
           alt="logo"
           className="transform -scale-x-100 object-scale-down h-32 w-32 my-2"
         />
-        <h1 className=" text-2xl font-extrabold "> Pokemon Pulls</h1>
-        <div className="mt-28 text-center">
-          <h2 className="font-black text-3xl">
+        <h1 className="text-center text-3xl font-extrabold mb-4 md:text-left"> Pokemon Pulls</h1>
+        </div>
+        {/* card info div */}
+        <div className="grid grid-flow-row text-center order-3">
+          <h2 className="font-black text-xl">
             {current_card.name} Num. {current_card.number}{" "}
           </h2>
           {current_card.flavorText ? (
@@ -361,12 +366,13 @@ function App() {
           )}
         </div>
       </div>
-
-      <div className="my-12 w-1/3 space-y-4 items-center">
+      {/* card / pull buttons and dropdown menu */}
+      <div className="space-y-4 items-center order-1 bg-inherit">
+        <h1 className="text-center text-3xl font-extrabold mb-4 md:hidden">Pokemon Pulls</h1>
         <img
           src={current_card.images.large}
           alt="Current Pokemon Card"
-          className="object-scale-down w-7/12 block mx-auto"
+          className="object-scale-down w-7/12 blo ck mx-auto"
         ></img>
 
         <div className="justify-center text-center">
@@ -399,14 +405,15 @@ function App() {
         />
       </div>
 
-      <div className="w-1/3 py-10 justify-center">
+      <div className="grid justify-center order-last bg-inherit">
+        <div className="order-2 hidden md:block md:order-none">
         <img
           src={current_set.images.logo}
           alt="logo"
-          className="object-scale-down w-2/3 block mx-auto"
+          className="object-scale-down w-1/2 md:w-2/3 block mx-auto order-2"
         ></img>
 
-        <div className="mt-5 text-center font-semibold text-lg">
+        <div className="mt-5 text-center font-semibold text-lg order-3">
           <h2>
             Series: <span>{current_set.series}</span>
           </h2>
@@ -414,62 +421,88 @@ function App() {
             Release Date: <span>{current_set.releaseDate}</span>
           </h2>
         </div>
+        </div>
         {current_card.tcgplayer ? (
-          <div className="mt-4">
+          <div className="">
             <img
-              alt="tcgplayer logo "
+              alt="tcgplayer logo"
               src={tcgplayer_logo_image_path}
-              className="object-scale-down w-1/2 block mx-auto"
+              className="object-scale-down hidden w-1/2 md:block mx-auto order-2"
             ></img>
             <div className="mt-2 flex justify-center">
-            {current_card.tcgplayer.prices.holofoil ? (
-              <h2 className="font-extrabold text-2xl">
-                Market Price:{" "}
-                <span className={
-                    current_card.tcgplayer.prices.holofoil.market !== null
-                      ? current_card.tcgplayer.prices.holofoil.market > 10
-                        ? "text-jade text-2xl"
-                        : current_card.tcgplayer.prices.holofoil.market < 1 ? "text-red-600" : ""
-                      : ""
-                  }>{current_card.tcgplayer.prices.holofoil.market}</span>
-              </h2>
-            ) : current_card.tcgplayer.prices.reverseHolofoil ? (
-              <h2 className="font-extrabold text-2xl">
-                Market Price:{" "}
-                <span className={
-                    current_card.tcgplayer.prices.reverseHolofoil.market !== null
-                      ? current_card.tcgplayer.prices.reverseHolofoil.market > 10
-                        ? "text-jade text-2xl"
-                        : current_card.tcgplayer.prices.reverseHolofoil.market < 1? "text-red-600": ""
-                      : ""
-                  }>
-                  {current_card.tcgplayer.prices.reverseHolofoil.market}
-                </span>
-              </h2>
-            ) : current_card.tcgplayer.prices.normal ? (
-              <h2 className="font-extrabold text-2xl">
-                Market Price:{" "}
-                <span
-                  className={
-                    current_card.tcgplayer.prices.normal.market !== null
-                      ? current_card.tcgplayer.prices.normal.market > 10
-                        ? "text-jade text-2xl"
-                        : current_card.tcgplayer.prices.normal.market < 1 ? "text-red-600": ""
-                      : ""
-                  }
-                >
-                  {current_card.tcgplayer.prices.normal.market}
-                </span>
-              </h2>
-            ) : (
-              "NOT FOUND"
-            )}
+              {current_card.tcgplayer.prices.holofoil ? (
+                <h2 className="font-extrabold text-2xl">
+                  Market Price:{" "}
+                  <span
+                    className={
+                      current_card.tcgplayer.prices.holofoil.market !== null
+                        ? current_card.tcgplayer.prices.holofoil.market > 10
+                          ? "text-jade text-2xl"
+                          : current_card.tcgplayer.prices.holofoil.market < 1
+                          ? "text-red-600"
+                          : ""
+                        : ""
+                    }
+                  >
+                    ${current_card.tcgplayer.prices.holofoil.market}
+                  </span>
+                </h2>
+              ) : current_card.tcgplayer.prices.reverseHolofoil ? (
+                <h2 className="font-extrabold text-2xl">
+                  Market Price:{" "}
+                  <span
+                    className={
+                      current_card.tcgplayer.prices.reverseHolofoil.market !==
+                      null
+                        ? current_card.tcgplayer.prices.reverseHolofoil.market >
+                          10
+                          ? "text-jade text-2xl"
+                          : current_card.tcgplayer.prices.reverseHolofoil
+                              .market < 1
+                          ? "text-red-600"
+                          : ""
+                        : ""
+                    }
+                  >
+                    ${current_card.tcgplayer.prices.reverseHolofoil.market}
+                  </span>
+                </h2>
+              ) : current_card.tcgplayer.prices.normal ? (
+                <h2 className="font-extrabold text-2xl">
+                  Market Price:{" "}
+                  <span
+                    className={
+                      current_card.tcgplayer.prices.normal.market !== null
+                        ? current_card.tcgplayer.prices.normal.market > 10
+                          ? "text-jade text-2xl"
+                          : current_card.tcgplayer.prices.normal.market < 1
+                          ? "text-red-600"
+                          : ""
+                        : ""
+                    }
+                  >
+                    ${current_card.tcgplayer.prices.normal.market}
+                  </span>
+                </h2>
+              ) : (
+                "NOT FOUND"
+              )}
             </div>
           </div>
         ) : (
           ""
         )}
-        <h2 className= {`text-center ${current_card.rarity === Rarity.Common? "text-black font-semibold text-2xl ": current_card.rarity === Rarity.Uncommon? "text-black font-semibold text-2xl ": "text-retro-orange-tan font-black text-3xl" }`}>{current_card.rarity.toLocaleUpperCase()}</h2>
+        <h2
+          className={`text-center ${
+            current_card.rarity === Rarity.Common
+              ? "text-black font-semibold text-2xl "
+              : current_card.rarity === Rarity.Uncommon
+              ? "text-black font-semibold text-2xl "
+              : "text-retro-orange-tan font-black text-3xl"
+          }`}
+        >
+          {current_card.rarity.toLocaleUpperCase()}
+        </h2>
       </div>
     </div>
   );
