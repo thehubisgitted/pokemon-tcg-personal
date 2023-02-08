@@ -313,7 +313,7 @@ function App() {
   }, [current_set]);
 
   return (
-    <div className="grid w-screen h-screen grid-cols-1 font-sans-roboto items-start bg-retro-light-blue text-pokemon-black md:grid-cols-3">
+    <div className="grid w-full min-h-screen grid-cols-1 font-sans-roboto items-start bg-retro-light-blue text-pokemon-black md:grid-cols-3">
       {/* first section */}
       <div className="flex flex-col content-center p-4 order-2 md:order-1 bg-inherit">
         {/* logo and title div */}
@@ -326,7 +326,7 @@ function App() {
         <h1 className="text-center text-3xl font-extrabold mb-4 md:text-left"> Pokemon Pulls</h1>
         </div>
         {/* card info div */}
-        <div className="grid grid-flow-row text-center order-3">
+        <div className="grid grid-flow-row text-center order-3 md:mt-5">
           <h2 className="font-black text-xl">
             {current_card.name} Num. {current_card.number}{" "}
           </h2>
@@ -404,7 +404,7 @@ function App() {
           menu_items={all_sets}
         />
       </div>
-
+      {/* 3rd section with set and market info */}
       <div className="grid justify-center order-last bg-inherit">
         <div className="order-2 hidden md:block md:order-none">
         <img

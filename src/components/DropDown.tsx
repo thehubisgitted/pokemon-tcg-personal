@@ -23,7 +23,7 @@ export const DropDown: FC<DropDown_Props> = ({
         {/*Menu Button*/}
         <Menu.Button
           className="inline-flex justify-center w-full rounded-md border border-gray-300
-                    shadow-sm px-4 py-2  bg-white text-sm font-medium text-gray-700 hover:bg-retro-tan
+                    shadow-sm px-4 py-2  bg-white text-sm font-medium text-gray-700 hover:bg-slate-100
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100   
                     focus: ring-retro-dark-blue"
         >
